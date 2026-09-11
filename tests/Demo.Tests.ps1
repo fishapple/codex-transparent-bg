@@ -47,8 +47,7 @@ print("PASS image metadata contains no private markers")
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $textExtensions = @('.md', '.ps1', '.psm1', '.py', '.json', '.yml', '.yaml', '.txt')
-$trackedFiles = @(& git -C $repoRoot ls-files) + @('tests/Demo.Tests.ps1', 'tools/build_demo_gif.py')
-$trackedFiles = $trackedFiles | Select-Object -Unique
+$trackedFiles = @(& git -C $repoRoot ls-files --cached --others --exclude-standard) | Select-Object -Unique
 $privatePatterns = @(
     [regex]::Escape($env:USERNAME),
     [regex]::Escape(('C:' + [char]92 + 'Users' + [char]92)),
