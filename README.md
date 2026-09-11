@@ -19,7 +19,7 @@ A small Windows-only Codex plugin that changes the opacity of the entire Codex d
 Paste this single command into PowerShell:
 
 ```powershell
-$d=Join-Path ([IO.Path]::GetTempPath()) ('codex-opacity-'+[guid]::NewGuid());$z="$d.zip";iwr 'https://github.com/fishapple/codex-transparent-bg/releases/download/v1.0.0/codex-window-opacity-v1.0.0.zip' -OutFile $z;Expand-Archive $z -DestinationPath $d;& "$d/install.ps1";Remove-Item $z -Force;Remove-Item $d -Recurse -Force
+$d=Join-Path ([IO.Path]::GetTempPath()) ('codex-opacity-'+[guid]::NewGuid());$z="$d.zip";iwr 'https://github.com/fishapple/codex-transparent-bg/releases/download/v1.0.0/codex-window-opacity-v1.0.0.zip' -OutFile $z;Expand-Archive $z -DestinationPath $d;pwsh -ExecutionPolicy Bypass -File "$d/install.ps1";Remove-Item $z -Force;Remove-Item $d -Recurse -Force
 ```
 
 Start a new Codex task after installation. Codex may ask you to trust the bundled `SessionStart` hook; approve it only after reviewing [`hooks/hooks.json`](hooks/hooks.json) and [`scripts/Set-CodexWindowOpacity.ps1`](scripts/Set-CodexWindowOpacity.ps1).

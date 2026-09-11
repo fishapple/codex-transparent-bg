@@ -19,7 +19,7 @@
 把下面一整行粘贴到 PowerShell：
 
 ```powershell
-$d=Join-Path ([IO.Path]::GetTempPath()) ('codex-opacity-'+[guid]::NewGuid());$z="$d.zip";iwr 'https://github.com/fishapple/codex-transparent-bg/releases/download/v1.0.0/codex-window-opacity-v1.0.0.zip' -OutFile $z;Expand-Archive $z -DestinationPath $d;& "$d/install.ps1";Remove-Item $z -Force;Remove-Item $d -Recurse -Force
+$d=Join-Path ([IO.Path]::GetTempPath()) ('codex-opacity-'+[guid]::NewGuid());$z="$d.zip";iwr 'https://github.com/fishapple/codex-transparent-bg/releases/download/v1.0.0/codex-window-opacity-v1.0.0.zip' -OutFile $z;Expand-Archive $z -DestinationPath $d;pwsh -ExecutionPolicy Bypass -File "$d/install.ps1";Remove-Item $z -Force;Remove-Item $d -Recurse -Force
 ```
 
 安装后请新建一个 Codex 任务。Codex 可能会要求你信任随插件提供的 `SessionStart` hook；建议先查看 [`hooks/hooks.json`](hooks/hooks.json) 和 [`scripts/Set-CodexWindowOpacity.ps1`](scripts/Set-CodexWindowOpacity.ps1) 再确认。
