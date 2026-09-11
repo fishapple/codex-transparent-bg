@@ -1,0 +1,29 @@
+{
+  "name": "codex-window-opacity",
+  "version": "1.0.0",
+  "description": "Adjust and persist the opacity of the Codex desktop window on Windows.",
+  "author": {
+    "name": "fishapple",
+    "url": "https://github.com/fishapple"
+  },
+  "homepage": "https://github.com/fishapple/codex-transparent-bg",
+  "repository": "https://github.com/fishapple/codex-transparent-bg",
+  "license": "MIT",
+  "keywords": ["codex", "windows", "opacity", "transparent", "wallpaper"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codex Transparent Background",
+    "shortDescription": "Show your wallpaper through the Codex desktop window.",
+    "longDescription": "A Windows-only Codex plugin that adjusts, saves, reapplies, and restores whole-window opacity without modifying Codex application files.",
+    "developerName": "fishapple",
+    "category": "Productivity",
+    "capabilities": ["Windows", "Appearance"],
+    "websiteURL": "https://github.com/fishapple/codex-transparent-bg",
+    "defaultPrompt": [
+      "Set the Codex window to 90% opacity.",
+      "Make the Codex window more transparent.",
+      "Restore the Codex window to fully opaque."
+    ],
+    "brandColor": "#76A9FA"
+  }
+}
