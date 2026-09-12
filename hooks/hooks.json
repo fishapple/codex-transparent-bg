@@ -7,8 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "true",
-            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& (Join-Path $env:PLUGIN_ROOT 'scripts\\Set-CodexWindowOpacity.ps1')\"",
+            "command": "pwsh.exe -NoProfile -ExecutionPolicy Bypass -File `"$PLUGIN_ROOT\\scripts\\Set-CodexWindowOpacity.ps1`"",
             "async": true,
             "timeout": 20,
             "statusMessage": "Applying Codex window opacity"
