@@ -1,1 +1,19 @@
-{"description":"Reapply the saved Codex window opacity when a desktop session starts or resumes.","hooks":{"SessionStart":[{"matcher":"^(startup|resume)$","hooks":[{"type":"command","command":"pwsh.exe -NoProfile -ExecutionPolicy Bypass -File `$PLUGIN_ROOT\\scripts\\Set-CodexWindowOpacity.ps1 -Save","async":false,"timeout":30,"statusMessage":"Applying Codex window opacity"}]}]}}
+{
+  "description": "Reapply the saved Codex window opacity when a desktop session starts or resumes.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "^(startup|resume)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "D:\\math_workplace\\temp-codex-transparent-bg\\scripts\\run-opacity.bat",
+            "async": false,
+            "timeout": 30,
+            "statusMessage": "Applying Codex window opacity"
+          }
+        ]
+      }
+    ]
+  }
+}
