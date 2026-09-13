@@ -14,6 +14,21 @@ $pluginsRoot = Join-Path $marketplaceRoot 'plugins'
 $destination = Join-Path $pluginsRoot $pluginName
 $runtimeScript = Join-Path $destination 'scripts\Set-CodexWindowOpacity.ps1'
 
+if ($userHomePath -eq [System.IO.Path]::GetFullPath([Environment]::GetFolderPath('UserProfile'))) {
+    Stop-ScheduledTask -TaskName 'CodexWindowOpacity' -ErrorAction SilentlyContinue
+    if (-not $KeepSettings) {
+        $cleanup = Join-Path $destination 'scripts\Remove-CodexOpacitySetting.ps1'
+        if (Test-Path -LiteralPath $cleanup) {
+            $action = New-ScheduledTaskAction -Execute (Join-Path $env:WINDIR 'System32\WindowsPowerShell\v1.0\powershell.exe') -Argument ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $cleanup + '"')
+            Set-ScheduledTask -TaskName 'CodexWindowOpacityApply' -Action $action -ErrorAction SilentlyContinue | Out-Null
+            Start-ScheduledTask -TaskName 'CodexWindowOpacityApply' -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 2
+        }
+    }
+    Unregister-ScheduledTask -TaskName 'CodexWindowOpacity' -Confirm:$false -ErrorAction SilentlyContinue
+    Unregister-ScheduledTask -TaskName 'CodexWindowOpacityApply' -Confirm:$false -ErrorAction SilentlyContinue
+}
+
 if (Test-Path -LiteralPath $runtimeScript) {
     try {
         & $runtimeScript -Restore -WaitSeconds 0 | Out-Null

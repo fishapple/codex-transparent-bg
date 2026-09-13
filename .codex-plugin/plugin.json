@@ -1,6 +1,6 @@
 {
   "name": "codex-window-opacity",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Adjust and persist the opacity of the Codex desktop window on Windows.",
   "author": {
     "name": "fishapple",

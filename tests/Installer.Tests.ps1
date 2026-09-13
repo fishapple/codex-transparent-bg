@@ -48,6 +48,8 @@ try {
     Assert-True (@($marketplace.plugins | Where-Object name -eq 'codex-window-opacity').Count -eq 1) 'target marketplace entry is idempotent'
     Assert-True (Test-Path -LiteralPath (Join-Path $pluginPath '.codex-plugin\plugin.json')) 'plugin manifest is installed'
     Assert-True (Test-Path -LiteralPath (Join-Path $pluginPath 'scripts\Set-CodexWindowOpacity.ps1')) 'runtime script is installed'
+    Assert-True (Test-Path -LiteralPath (Join-Path $pluginPath 'scripts\Watch-CodexWindow.ps1')) 'window watcher is installed'
+    Assert-True (Test-Path -LiteralPath (Join-Path $pluginPath 'scripts\Remove-CodexOpacitySetting.ps1')) 'host settings cleanup is installed'
 
     & $uninstallScript -UserHome $fixture -SkipCodexRegistration -KeepSettings
 

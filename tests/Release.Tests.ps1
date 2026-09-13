@@ -21,6 +21,8 @@ $required = @(
     '.codex-plugin/plugin.json',
     'hooks/hooks.json',
     'scripts/Set-CodexWindowOpacity.ps1',
+    'scripts/Watch-CodexWindow.ps1',
+    'scripts/Remove-CodexOpacitySetting.ps1',
     'scripts/CodexWindowOpacity.Settings.psm1',
     'skills/codex-window-opacity/SKILL.md',
     'install.ps1',

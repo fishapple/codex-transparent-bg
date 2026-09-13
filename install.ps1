@@ -39,6 +39,21 @@ foreach ($relativePath in $requiredPaths) {
     Copy-Item -LiteralPath (Join-Path $sourceRootPath $relativePath) -Destination $targetPath -Recurse -Force
 }
 
+if ($userHomePath -eq [System.IO.Path]::GetFullPath([Environment]::GetFolderPath('UserProfile'))) {
+    $identity = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+    $powershell = Join-Path $env:WINDIR 'System32\WindowsPowerShell\v1.0\powershell.exe'
+    $principal = New-ScheduledTaskPrincipal -UserId $identity -LogonType Interactive -RunLevel Limited
+    $watcher = Join-Path $destinationFull 'scripts\Watch-CodexWindow.ps1'
+    $runtime = Join-Path $destinationFull 'scripts\Set-CodexWindowOpacity.ps1'
+    $watchAction = New-ScheduledTaskAction -Execute $powershell -Argument ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $watcher + '"')
+    $trigger = New-ScheduledTaskTrigger -AtLogOn -User $identity
+    $watchSettings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1)
+    Register-ScheduledTask -TaskName 'CodexWindowOpacity' -Action $watchAction -Trigger $trigger -Principal $principal -Settings $watchSettings -Force | Out-Null
+    $applyAction = New-ScheduledTaskAction -Execute $powershell -Argument ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $runtime + '" -Opacity 90 -Save -HostApply -WaitSeconds 0')
+    Register-ScheduledTask -TaskName 'CodexWindowOpacityApply' -Action $applyAction -Principal $principal -Force | Out-Null
+    Start-ScheduledTask -TaskName 'CodexWindowOpacity'
+}
+
 if (Test-Path -LiteralPath $marketplacePath) {
     $marketplace = Get-Content -LiteralPath $marketplacePath -Raw | ConvertFrom-Json
     if ($marketplace.name -ne 'personal') {
@@ -93,4 +108,4 @@ if (-not $SkipCodexRegistration) {
 }
 
 Write-Host "Installed $pluginName to $destinationFull"
-Write-Host 'Start a new Codex task so the plugin hook and skill are loaded.'
+Write-Host 'The window watcher is active and will reapply saved opacity after Codex restarts.'

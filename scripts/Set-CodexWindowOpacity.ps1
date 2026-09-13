@@ -7,7 +7,8 @@ param(
 
     [switch]$Diagnostic,
     [switch]$Save,
-    [switch]$Restore
+    [switch]$Restore,
+    [switch]$HostApply
 )
 
 Set-StrictMode -Version Latest
@@ -28,7 +29,22 @@ elseif (-not $PSBoundParameters.ContainsKey('Opacity')) {
 
 $alpha = ConvertTo-OpacityAlpha -Opacity $Opacity
 if ($Save) {
-    Save-CodexOpacitySetting -Path $settingsPath -Opacity $Opacity
+    $applyTask = if (-not $HostApply) { Get-ScheduledTask -TaskName 'CodexWindowOpacityApply' -ErrorAction SilentlyContinue } else { $null }
+    if ($null -ne $applyTask) {
+        $installedScript = Join-Path ([Environment]::GetFolderPath('UserProfile')) '.agents\plugins\plugins\codex-window-opacity\scripts\Set-CodexWindowOpacity.ps1'
+        $command = [System.IO.Path]::GetFullPath($installedScript)
+        $existingAction = @($applyTask.Actions)[0]
+        if (-not ($existingAction.Arguments -like "*${command}*")) {
+            throw 'The opacity apply task does not point to this plugin.'
+        }
+        $arguments = '-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $command + '" -Opacity ' + $Opacity + ' -Save -HostApply -WaitSeconds 0'
+        $action = New-ScheduledTaskAction -Execute $existingAction.Execute -Argument $arguments
+        Set-ScheduledTask -TaskName 'CodexWindowOpacityApply' -Action $action | Out-Null
+        Start-ScheduledTask -TaskName 'CodexWindowOpacityApply'
+    }
+    else {
+        Save-CodexOpacitySetting -Path $settingsPath -Opacity $Opacity
+    }
 }
 
 if (-not ('CodexWindowOpacity.NativeMethods' -as [type])) {

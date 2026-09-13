@@ -17,12 +17,12 @@ foreach ($jsonPath in @('.codex-plugin\plugin.json', 'hooks\hooks.json')) {
 }
 
 $manifest = Get-Content -LiteralPath (Join-Path $repoRoot '.codex-plugin\plugin.json') -Raw | ConvertFrom-Json
-if ($manifest.name -ne 'codex-window-opacity' -or $manifest.version -ne '1.0.0') {
+if ($manifest.name -ne 'codex-window-opacity' -or $manifest.version -ne '1.0.1') {
     throw 'Plugin manifest name or version is incorrect.'
 }
-Write-Host 'PASS plugin manifest identifies v1.0.0'
+Write-Host 'PASS plugin manifest identifies v1.0.1'
 
-& (Join-Path $repoRoot 'tools\package-release.ps1') -Version '1.0.0' -OutputDirectory (Join-Path $repoRoot 'dist')
+& (Join-Path $repoRoot 'tools\package-release.ps1') -Version '1.0.1' -OutputDirectory (Join-Path $repoRoot 'dist')
 Invoke-CheckedScript (Join-Path $PSScriptRoot 'Release.Tests.ps1')
 
 Write-Host 'All release checks passed.' -ForegroundColor Green

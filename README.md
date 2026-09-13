@@ -14,17 +14,7 @@ A small Windows-only Codex plugin that changes the opacity of the entire Codex d
 - PowerShell 7 (`pwsh`) recommended; Windows PowerShell 5.1 is also supported by the runtime
 - Codex CLI available on `PATH` for automatic plugin registration
 
-## Install from the v1.0.0 release
-
-Paste this single command into PowerShell:
-
-```powershell
-$d=Join-Path ([IO.Path]::GetTempPath()) ('codex-opacity-'+[guid]::NewGuid());$z="$d.zip";iwr 'https://github.com/fishapple/codex-transparent-bg/releases/download/v1.0.0/codex-window-opacity-v1.0.0.zip' -OutFile $z;Expand-Archive $z -DestinationPath $d;pwsh -ExecutionPolicy Bypass -File "$d/install.ps1";Remove-Item $z -Force;Remove-Item $d -Recurse -Force
-```
-
-Start a new Codex task after installation. Codex may ask you to trust the bundled `SessionStart` hook; approve it only after reviewing [`hooks/hooks.json`](hooks/hooks.json) and [`scripts/Set-CodexWindowOpacity.ps1`](scripts/Set-CodexWindowOpacity.ps1).
-
-## Install from source
+## Install
 
 ```powershell
 git clone https://github.com/fishapple/codex-transparent-bg.git
@@ -32,7 +22,7 @@ cd codex-transparent-bg
 pwsh -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-The installer copies only the plugin folders into your personal marketplace, preserves unrelated marketplace entries, and registers `codex-window-opacity@personal` when the Codex CLI is available.
+The installer copies the plugin into your personal marketplace, registers a Windows logon task that maintains the saved opacity across app restarts, and registers `codex-window-opacity@personal` when the Codex CLI is available. Run the installer again to update an existing installation.
 
 ## Use
 
@@ -53,7 +43,7 @@ pwsh -File $script -Restore -Save
 pwsh -File $script -Diagnostic
 ```
 
-Supported opacity values are `35` through `100`. The default is `90`; a saved value is reapplied when a new Codex session starts.
+Supported opacity values are `35` through `100`. The default is `90`; the saved value is reapplied when the Codex window is recreated.
 
 ## Uninstall
 
@@ -63,7 +53,7 @@ From a clone or extracted release:
 pwsh -ExecutionPolicy Bypass -File .\uninstall.ps1
 ```
 
-The uninstaller first attempts to restore full opacity, then removes only this plugin and its marketplace entry. Add `-KeepSettings` to retain the saved opacity preference.
+The uninstaller stops the Windows tasks, restores full opacity, and removes this plugin and its marketplace entry. Add `-KeepSettings` to retain the saved opacity preference.
 
 ## Security and privacy
 
@@ -78,7 +68,7 @@ The uninstaller first attempts to restore full opacity, then removes only this p
 - Opacity applies to the whole window, so lower values also fade text and controls. Values below `35` are rejected for usability.
 - If no Codex window is found, confirm you are using the packaged Codex desktop app and run with `-Diagnostic`.
 - If the CLI was unavailable during installation, run `codex plugin add codex-window-opacity@personal` later.
-- If a saved value is not applied, open a new Codex task so the `SessionStart` hook can run.
+- If a saved value is not applied, check that the `CodexWindowOpacity` Windows scheduled task is running.
 
 ## Artwork notice
 

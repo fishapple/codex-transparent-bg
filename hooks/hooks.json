@@ -1,19 +1,4 @@
 {
-  "description": "Reapply the saved Codex window opacity when a desktop session starts or resumes.",
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "^(startup|resume)$",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$PLUGIN_ROOT/scripts/run-opacity.bat\"",
-            "async": false,
-            "timeout": 30,
-            "statusMessage": "Applying Codex window opacity"
-          }
-        ]
-      }
-    ]
-  }
+  "description": "Window opacity is maintained by the Windows logon task.",
+  "hooks": {}
 }
