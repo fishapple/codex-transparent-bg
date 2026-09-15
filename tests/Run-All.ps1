@@ -22,7 +22,8 @@ if ($manifest.name -ne 'codex-window-opacity' -or $manifest.version -ne '1.0.1')
 }
 Write-Host 'PASS plugin manifest identifies v1.0.1'
 
-& (Join-Path $repoRoot 'tools\package-release.ps1') -Version '1.0.1' -OutputDirectory (Join-Path $repoRoot 'dist')
-Invoke-CheckedScript (Join-Path $PSScriptRoot 'Release.Tests.ps1')
+$archivePath = Join-Path $repoRoot "dist\codex-window-opacity-v$($manifest.version).zip"
+& (Join-Path $repoRoot 'tools\package-release.ps1') -Version $manifest.version -OutputDirectory (Join-Path $repoRoot 'dist')
+Invoke-CheckedScript (Join-Path $PSScriptRoot 'Release.Tests.ps1') @('-ArchivePath', $archivePath)
 
 Write-Host 'All release checks passed.' -ForegroundColor Green
