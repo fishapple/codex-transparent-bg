@@ -47,7 +47,7 @@ if ($userHomePath -eq [System.IO.Path]::GetFullPath([Environment]::GetFolderPath
     $runtime = Join-Path $destinationFull 'scripts\Set-CodexWindowOpacity.ps1'
     $watchAction = New-ScheduledTaskAction -Execute $powershell -Argument ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $watcher + '"')
     $trigger = New-ScheduledTaskTrigger -AtLogOn -User $identity
-    $watchSettings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1)
+    $watchSettings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
     Register-ScheduledTask -TaskName 'CodexWindowOpacity' -Action $watchAction -Trigger $trigger -Principal $principal -Settings $watchSettings -Force | Out-Null
     $applyAction = New-ScheduledTaskAction -Execute $powershell -Argument ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $runtime + '" -Opacity 90 -Save -HostApply -WaitSeconds 0')
     Register-ScheduledTask -TaskName 'CodexWindowOpacityApply' -Action $applyAction -Principal $principal -Force | Out-Null
