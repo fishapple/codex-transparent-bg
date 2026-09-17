@@ -46,9 +46,10 @@ if ($userHomePath -eq [System.IO.Path]::GetFullPath([Environment]::GetFolderPath
     $watcher = Join-Path $destinationFull 'scripts\Watch-CodexWindow.ps1'
     $runtime = Join-Path $destinationFull 'scripts\Set-CodexWindowOpacity.ps1'
     $watchAction = New-ScheduledTaskAction -Execute $powershell -Argument ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $watcher + '"')
-    $trigger = New-ScheduledTaskTrigger -AtLogOn -User $identity
+    $logonTrigger = New-ScheduledTaskTrigger -AtLogOn -User $identity
+    $recoveryTrigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes 1) -RepetitionDuration (New-TimeSpan -Days 3650)
     $watchSettings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
-    Register-ScheduledTask -TaskName 'CodexWindowOpacity' -Action $watchAction -Trigger $trigger -Principal $principal -Settings $watchSettings -Force | Out-Null
+    Register-ScheduledTask -TaskName 'CodexWindowOpacity' -Action $watchAction -Trigger @($logonTrigger, $recoveryTrigger) -Principal $principal -Settings $watchSettings -Force | Out-Null
     $applyAction = New-ScheduledTaskAction -Execute $powershell -Argument ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + $runtime + '" -Opacity 90 -Save -HostApply -WaitSeconds 0')
     Register-ScheduledTask -TaskName 'CodexWindowOpacityApply' -Action $applyAction -Principal $principal -Force | Out-Null
     Start-ScheduledTask -TaskName 'CodexWindowOpacity'
